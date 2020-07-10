@@ -1,38 +1,37 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import Cookies from 'js-cookie'
 import {Link} from 'react-router-dom';
 
 export default class Session extends Component{
 
     constructor(props){
-
-        super(props)
+        super(props);
 
         this.state = {
-            logoutLink: this.compoentRender()
+            link: this.getLink()
         }
     }
-    
 
-    logout(){
+    componentDidMount(){
+        this.checkCookie();
+    }
+
+    checkCookie = ()=>{
+        setTimeout(()=>{
+            //console.log('hello');
+            this.setState({link: this.getLink()});
+            this.checkCookie();
+        }, 500);
+    }
+
+    logout = ()=>{
         Cookies.remove('session');
-        //console.log('im working')
-        this.handleState();
-        if(!Cookies.remove('session')){
-            window.location.reload(false);
-        }
+        //window.location.reload();
     }
 
-    handleState(){
-        this.setState({logoutLink: this.compoentRender()});
-    }
-
-    compoentRender(){
-        return Cookies.get('session') ? <Link to="#" onClick={()=>this.logout()}>Logout</Link> : <div></div>;
-    }
+    getLink = ()=> Cookies.get('session') ? <Link to="/" onClick={this.logout}>Logout</Link> : <Fragment></Fragment>;
 
     render() {
-        const {logoutLink} = this.state;
-        return logoutLink;
+        return this.state.link;
     }
 }
