@@ -1,4 +1,5 @@
 import React, {Component, Fragment} from 'react';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
 
@@ -9,34 +10,40 @@ import EmailInput from './EmailInput';
 import PasswordInput from './PasswordInput';
 import SubmitButtom from './SubmitButton';
 
+import sha256 from 'crypto-js/sha256';
+
+import LoginCard from './LoginCard';
+import FormGroup from '../FormGroup';
+import SessionContext from '../Session/SessionContext';
+
 export default class Login extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            username: '',
-            password: ''
-        }
+
+    state={
+        username: '',
+        password: ''
     }
+
+    static contextType = SessionContext;
 
     checkLogin = ()=>{        
         const {username, password} = this.state;
 
-        axios.post('http://localhost:8081/auth', {username: username, password: password}, {headers: {hello: 'expuesto'}})
+        axios.post('http://localhost:8081/authhash', {message: sha256(`${username}:${password}`).toString()})
             .then(res => {
                 Cookies.set('session', res, {expires: res.exp});
-                this.props.history.push('/profile');
+                this.props.history.push('/dashboard');
             });
     }
 
     componentDidMount(){
         if(Cookies.get('session')){
-            this.props.history.push('/profile');
+            this.props.history.push('/dashboard');
         }
     }
 
     componentDidUpdate(){
         if(Cookies.get('session')){
-            this.props.history.push('/profile');
+            this.props.history.push('/dashboard');
         }
     }
 
@@ -45,17 +52,13 @@ export default class Login extends Component{
         return (
             <Fragment>
                 <h1>Login</h1>
-                <div className="d-flex justify-content-center h-100">
-                    <div className="card">
-                        <div className="card-body">
-                            <div>
-                                <EmailInput formContext={this} value="username"/>
-                                <PasswordInput formContext={this} value="password"/>
-                            </div>
-                            <SubmitButtom onClick={this.checkLogin}/>
-                        </div>
-                    </div>
-                </div>
+                <LoginCard>
+                    <EmailInput parentContext={this} value="username"/>
+                    <PasswordInput parentContext={this} value="password"/>
+                    <FormGroup>
+                        <SubmitButtom onClick={this.checkLogin} value="Enviar"/>
+                    </FormGroup>
+                </LoginCard>
             </Fragment>
         );
     }

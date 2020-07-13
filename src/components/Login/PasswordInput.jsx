@@ -1,19 +1,13 @@
-import React, {Fragment} from 'react';
-import InputField from './InputField';
+import React, {Component} from 'react';
+import { FaLock } from 'react-icons/fa';
+import LoginField from './LoginField';
 
-export default class PasswordInput extends InputField{
+export default class PasswordInput extends Component{
 
     render() {
+        const {parentContext, value} = this.props;
         return (
-             <Fragment>
-                 <div className="input-group form-group">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text"><i className="fas fa-key"></i></span>
-                    </div>
-                    <input type="password" className="form-control" placeholder="password" 
-                    onChange={this.handleChange.bind(this)}/>
-                </div>
-             </Fragment>
+            <LoginField parentContext={parentContext} type="password" value={value} placeholder="password" icon={<FaLock/>}/>
         );
     }
 }

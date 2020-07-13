@@ -1,17 +1,13 @@
-import React from 'react';
-import InputField from './InputField';
+import React, {Component} from 'react';
+import { FaUser } from 'react-icons/fa';
+import LoginField from './LoginField';
 
-export default class EmailInput extends InputField{
+export default class EmailInput extends Component{
 
     render() {
+        const {parentContext, value} = this.props;
         return (
-            <div className="input-group form-group">
-                <div className="input-group-prepend">
-                    <span className="input-group-text"><i className="fas fa-user"></i></span>
-                </div>
-                <input type="text" className="form-control" placeholder="username" 
-                onChange={this.handleChange.bind(this)}/>
-            </div>
+            <LoginField parentContext={parentContext} type="text" value={value} placeholder="username" icon={<FaUser/>}/>
         );
     }
 }
